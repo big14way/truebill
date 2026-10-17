@@ -4,7 +4,7 @@
 
 **Proof on Base mainnet, end to end in Claude:** Claude called the TrueBill PayBox plugin, PayBox paid the $0.01 check (SAFE_TO_PAY, 7/7 checks), then paid the invoice through the verified link. USDC transfer to the merchant's registered payout: [0x291219d8…69d38](https://basescan.org/tx/0x291219d8191cc207a75569b0d1866974ab04982f47807e019e8f640182569d38). The forged copy returned `DO_NOT_PAY` with three reasons, and a second "pay it again" was refused.
 
-**Hackathon status:** submitted to the MoonPay PayBox Hackathon (Chapter 1) as plugin "TrueBill".
+**Hackathon status:** submitted to the MoonPay PayBox Hackathon (Chapter 1) as plugin "TrueBill". **Demo video:** https://x.com/Big14teru/status/2111502501363298336
 
 Invoice fraud ("we changed our bank details") is one of the oldest scams. Once agents pay invoices
 automatically, it gets worse. TrueBill is an x402-native PayBox plugin:
