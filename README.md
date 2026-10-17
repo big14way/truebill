@@ -130,3 +130,25 @@ scripts/           gen-keys, create-invoice, forge-invoice, check-url, test-buye
 ```
 
 Built for the MoonPay PayBox Hackathon (Chapter 1).
+
+## PayBox plugin (`plugin/`)
+
+The hackathon submission is a PayBox plugin: a bundled MCP server whose tools return x402 payment
+proposals that PayBox validates, gets the user's approval for, pays, and completes.
+
+| Tool | What it does | Cost |
+|---|---|---|
+| `check_invoice` | Proposes the $0.01 x402 call to `/api/check?url=` for an invoice link | 0.01 USDC |
+| `pay_invoice` | Looks up the invoice, refuses if paid/settling, proposes the x402 call to `/api/pay/<id>` | invoice amount |
+| `invoice_status` | Free read of status, tx hash and explorer link | free |
+
+Build and verify with the PayBox reference toolchain (Node 24, pnpm 11.11.0):
+
+```bash
+cd plugin
+pnpm install --frozen-lockfile
+pnpm test            # typecheck, deterministic build, conformance → dist/plugin.mjs
+```
+
+Hosted configuration in the developer portal: network host `truebill.onrender.com`, no secrets.
+Optional environment variable `TRUEBILL_URL` overrides the server base URL.

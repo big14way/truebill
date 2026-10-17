@@ -1,0 +1,6 @@
+{
+  "tool": "check_invoice",
+  "arguments": {
+    "invoiceUrl": "https://truebill.onrender.com/i/inv_c927ee21fe7a"
+  }
+}
