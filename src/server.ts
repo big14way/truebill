@@ -12,6 +12,11 @@ import { SignedInvoiceSchema, recoverInvoiceSigner } from "./invoice.js";
 import { MERCHANTS, getMerchant } from "./merchants.js";
 import { store, STORE_KIND, type InvoiceRecord } from "./store.js";
 import { checkInvoice, AGENT_INSTRUCTIONS } from "./check.js";
+import { invoicePage, landingPage } from "./html.js";
+
+// Browsers get HTML; agents, curl and x402 clients keep getting JSON.
+const wantsHtml = (req: express.Request) =>
+  req.query.format !== "json" && req.accepts(["json", "html"]) === "html";
 
 const PAY_PATH = /^\/api\/pay\/(inv_[a-f0-9]{12})$/;
 
@@ -23,7 +28,8 @@ app.use(express.json({ limit: "50kb" }));
 
 // ───────────────────────── Free routes ─────────────────────────
 
-app.get("/", (_req, res) => {
+app.get("/", (req, res) => {
+  if (wantsHtml(req)) return res.type("html").send(landingPage(MERCHANTS.size));
   res.json({
     name: "TrueBill",
     tagline: "Verify an invoice before your agent pays it.",
@@ -56,6 +62,7 @@ app.get("/health", (_req, res) => {
 app.get("/i/:id", async (req, res) => {
   const rec = await store.get(String(req.params.id));
   if (!rec) return res.status(404).json({ error: "Invoice not found" });
+  if (wantsHtml(req)) return res.type("html").send(invoicePage(rec));
   res.json(rec.doc);
 });
 
