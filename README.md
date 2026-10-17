@@ -2,7 +2,9 @@
 
 **Live:** https://truebill.onrender.com · **Manifest:** `GET /?format=json` · **Health:** `GET /health`
 
-**Proof on Base mainnet:** PayBox paid a TrueBill check and then the invoice through x402. USDC transfer to the merchant's registered payout: [0xb14db994…62fa9](https://basescan.org/tx/0xb14db994f133b0c8a7ce68c7ca244be155a866ac5e60a3c2209c9d76c4262fa9). The same forged invoice returned `DO_NOT_PAY` with three reasons.
+**Proof on Base mainnet, end to end in Claude:** Claude called the TrueBill PayBox plugin, PayBox paid the $0.01 check (SAFE_TO_PAY, 7/7 checks), then paid the invoice through the verified link. USDC transfer to the merchant's registered payout: [0x291219d8…69d38](https://basescan.org/tx/0x291219d8191cc207a75569b0d1866974ab04982f47807e019e8f640182569d38). The forged copy returned `DO_NOT_PAY` with three reasons, and a second "pay it again" was refused.
+
+**Hackathon status:** submitted to the MoonPay PayBox Hackathon (Chapter 1) as plugin "TrueBill".
 
 Invoice fraud ("we changed our bank details") is one of the oldest scams. Once agents pay invoices
 automatically, it gets worse. TrueBill is an x402-native PayBox plugin:
@@ -90,19 +92,25 @@ npm run checkurl -- <raw gist URL>
 npm run buy -- "<that check URL>"   # DO_NOT_PAY with 3 reasons
 ```
 
-## Agent prompt (Claude + PayBox)
+## Try it in Claude (PayBox plugin)
+
+1. Connect PayBox to Claude: add `https://api.paybox.sh/mcp` as a custom connector and sign in.
+2. Enable the **TrueBill** plugin in app.paybox.sh → Plugins.
+3. Paste:
 
 ```
 I got two invoices from Ada Studio today:
 A) <REAL INVOICE LINK>
 B) <FORGED LINK>
-
-TrueBill (<server URL>) verifies invoices before they're paid.
-For each invoice, call <server URL>/api/check?url=<URL-encoded invoice link>
-using the PayBox use_service tool with my EVM wallet. Pay only invoices whose verdict is
-SAFE_TO_PAY, and pay them only by calling the payUrl TrueBill returns, again with use_service.
+Use the PayBox TrueBill plugin with my EVM wallet. For each invoice run check_invoice first.
+Pay only invoices whose verdict is SAFE_TO_PAY, and pay them only with pay_invoice.
 For anything you don't pay, tell me exactly why.
 ```
+
+If a PayBox card says it is waiting for a signing key, reload the conversation and ask Claude to
+reopen the signing window; the card then signs with your passkey.
+
+Without the plugin, the same flow works with PayBox's `use_service` tool against `/api/check?url=` and the returned `payUrl`, or with the `paybox` CLI.
 
 ## Deploy (Render)
 
