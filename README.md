@@ -1,5 +1,7 @@
 # TrueBill: verify before your agent pays
 
+**Live:** https://truebill.onrender.com · **Manifest:** `GET /` · **Health:** `GET /health`
+
 Invoice fraud ("we changed our bank details") is one of the oldest scams. Once agents pay invoices
 automatically, it gets worse. TrueBill is an x402-native PayBox plugin:
 
