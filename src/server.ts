@@ -62,7 +62,11 @@ app.get("/health", (_req, res) => {
 app.get("/i/:id", async (req, res) => {
   const rec = await store.get(String(req.params.id));
   if (!rec) return res.status(404).json({ error: "Invoice not found" });
-  if (wantsHtml(req)) return res.type("html").send(invoicePage(rec));
+  if (wantsHtml(req)) {
+    // Same seven checks the paid endpoint runs, shown free for humans (agents still pay /api/check).
+    const result = await checkInvoice(`${PUBLIC_BASE_URL}/i/${rec.doc.invoice.invoiceId}`);
+    return res.type("html").send(invoicePage(rec, result.checks));
+  }
   res.json(rec.doc);
 });
 

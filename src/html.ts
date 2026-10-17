@@ -37,7 +37,9 @@ function page(title: string, body: string): string {
 </main></body></html>`;
 }
 
-export function invoicePage(rec: InvoiceRecord): string {
+export type CheckLine = { name: string; pass: boolean; detail: string };
+
+export function invoicePage(rec: InvoiceRecord, checks: CheckLine[] = []): string {
   const inv = rec.doc.invoice;
   const status = rec.status;
   const checkUrl = `${PUBLIC_BASE_URL}/api/check?url=${encodeURIComponent(`${PUBLIC_BASE_URL}/i/${inv.invoiceId}`)}`;
@@ -58,6 +60,10 @@ export function invoicePage(rec: InvoiceRecord): string {
   ${status === "paid" ? `<div class="row"><b>Paid at</b><span>${esc(rec.paidAt)}</span></div>
   <div class="row"><b>Transaction</b><span>${rec.txHash ? `<a href="${esc(EXPLORER_TX + rec.txHash)}">${esc(rec.txHash.slice(0, 14))}…</a>` : "pending"}</span></div>` : ""}
 </div>
+${checks.length ? `<h2>Registry verification</h2>
+<div class="card">
+${checks.map((c) => `<div class="row"><b>${c.pass ? '<span style="color:var(--ok)">✓</span>' : '<span style="color:var(--bad)">✗</span>'} ${esc(c.name)}</b><span>${esc(c.detail)}</span></div>`).join("")}
+</div>` : ""}
 <h2>For your agent</h2>
 <p class="mute">Ask your agent to verify this invoice with TrueBill before paying. The check costs ${esc(CHECK_PRICE)} over x402 and returns SAFE_TO_PAY or DO_NOT_PAY with reasons.</p>
 <pre>${esc(checkUrl)}</pre>
