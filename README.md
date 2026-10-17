@@ -1,6 +1,8 @@
 # TrueBill: verify before your agent pays
 
-**Live:** https://truebill.onrender.com · **Manifest:** `GET /` · **Health:** `GET /health`
+**Live:** https://truebill.onrender.com · **Manifest:** `GET /?format=json` · **Health:** `GET /health`
+
+**Proof on Base mainnet:** PayBox paid a TrueBill check and then the invoice through x402. USDC transfer to the merchant's registered payout: [0xb14db994…62fa9](https://basescan.org/tx/0xb14db994f133b0c8a7ce68c7ca244be155a866ac5e60a3c2209c9d76c4262fa9). The same forged invoice returned `DO_NOT_PAY` with three reasons.
 
 Invoice fraud ("we changed our bank details") is one of the oldest scams. Once agents pay invoices
 automatically, it gets worse. TrueBill is an x402-native PayBox plugin:
